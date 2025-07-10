@@ -1,16 +1,20 @@
 // Global variables
 const whatsappNumber = "573001234567"; // Cambiar por el número real
-const whatsappMessage = "Hola! Me interesa solicitar una cotización para servicios eléctricos";
+const whatsappMessage = "Hola! Me interesa solicitar una cotización para servicios eléctricos JSJ";
 let currentSlide = 0;
 const totalSlides = 3;
+let currentHeroSlide = 0;
+const totalHeroSlides = 3;
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize carousel
     showSlide(currentSlide);
+    showHeroSlide(currentHeroSlide);
     
-    // Auto-advance carousel
+    // Auto-advance carousels
     setInterval(nextSlide, 5000);
+    setInterval(nextHeroSlide, 4000);
     
     // Initialize icons
     if (typeof feather !== 'undefined') {
@@ -253,11 +257,86 @@ function trackPhoneClick() {
     });
 }
 
+// WhatsApp Window Functions
+function openWhatsAppWindow() {
+    const window = document.getElementById('whatsappWindow');
+    window.classList.add('active');
+    trackWhatsAppClick();
+}
+
+function closeWhatsAppWindow() {
+    const window = document.getElementById('whatsappWindow');
+    window.classList.remove('active');
+}
+
+function toggleWhatsAppWindow() {
+    const window = document.getElementById('whatsappWindow');
+    window.classList.toggle('active');
+    if (window.classList.contains('active')) {
+        trackWhatsAppClick();
+    }
+}
+
+function sendWhatsAppMessage(message) {
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hola JSJ! ${message}`)}`;
+    window.open(url, '_blank');
+    closeWhatsAppWindow();
+}
+
+function sendCustomWhatsAppMessage() {
+    const input = document.getElementById('whatsappInput');
+    const message = input.value.trim();
+    if (message) {
+        sendWhatsAppMessage(message);
+        input.value = '';
+    }
+}
+
+// Hero Carousel Functions
+function showHeroSlide(n) {
+    const slides = document.querySelectorAll('.hero-carousel-item');
+    const dots = document.querySelectorAll('.hero-dot');
+    
+    if (n >= totalHeroSlides) currentHeroSlide = 0;
+    if (n < 0) currentHeroSlide = totalHeroSlides - 1;
+    
+    slides.forEach((slide, index) => {
+        slide.classList.remove('active');
+        if (index === currentHeroSlide) {
+            slide.classList.add('active');
+        }
+    });
+    
+    dots.forEach((dot, index) => {
+        dot.classList.remove('active');
+        if (index === currentHeroSlide) {
+            dot.classList.add('active');
+        }
+    });
+}
+
+function nextHeroSlide() {
+    currentHeroSlide++;
+    showHeroSlide(currentHeroSlide);
+}
+
+function prevHeroSlide() {
+    currentHeroSlide--;
+    showHeroSlide(currentHeroSlide);
+}
+
+function currentHeroSlide(n) {
+    currentHeroSlide = n - 1;
+    showHeroSlide(currentHeroSlide);
+}
+
+function scrollToSection(selector) {
+    document.querySelector(selector).scrollIntoView({ behavior: 'smooth' });
+}
+
 // Enhanced WhatsApp contact with tracking
 function handleWhatsAppContact() {
-    trackWhatsAppClick();
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-    window.open(url, '_blank');
+    openWhatsAppWindow();
 }
 
 // Enhanced phone contact with tracking
